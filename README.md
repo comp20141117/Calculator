@@ -19,5 +19,5 @@ a calculator based on SDL
 参考的是下面这篇文章:
         [http://m.blog.csdn.net/article/details?id=9123017](http://m.blog.csdn.net/article/details?id=9123017)
         
-* 通用堆栈
+* void *的用法
 * strtok_r函数(字符串分隔)
