@@ -2,7 +2,7 @@
 
 Status InitStack(Stack * stack, unsigned stacksize, unsigned typesize)
 {
-	stack->base = malloc(typesize);
+	stack->base = malloc(stacksize);
 	if(!stack->base)
 		return ERROR;
 	stack->top = stack->base;
@@ -10,6 +10,7 @@ Status InitStack(Stack * stack, unsigned stacksize, unsigned typesize)
 	stack->typesize = typesize;
 	return OK;
 }
+
 
 Status DestroyStack(Stack *stack)
 {
@@ -43,5 +44,5 @@ Status Pop(Stack *stack, void *e)
 
 Status GetLen(Stack *stack)
 {
-	return ((int)stack->top - (int)stack->base) / stack->typesize;
+	return (((int)stack->top - (int)stack->base) / stack->typesize);
 }
