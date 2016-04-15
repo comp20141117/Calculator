@@ -81,7 +81,7 @@ Status Calculate(char *arr, void *result)
 	if(InitStack(S, MAXSIZE*sizeof(double), sizeof(double)) == ERROR){
 		my_err("stack init error!");
 	}
-	while((op = strtok_s(buf, " ", &saveptr)) != NULL){
+	while((op = strtok_r(buf, " ", &saveptr)) != NULL){
 		buf = NULL;
 		switch(op[0]){
 		case '+':

@@ -22,12 +22,12 @@ Status DestroyStack(Stack *stack)
 
 Status Push(Stack *stack, void *e)
 {
-	if((int)stack->top - (int)stack->base + stack->typesize > stack->stacksize){
+	if((unsigned long)stack->top - (unsigned long)stack->base + (unsigned long)stack->typesize > (unsigned long)stack->stacksize){
 		printf("stack is full!\n");
 		return FALSE;
 	}
 	memcpy(stack->top, e, stack->typesize);
-	stack->top = (void *)((int)stack->top + stack->typesize);
+	stack->top = (void *)((unsigned long)stack->top + (unsigned long)stack->typesize);
 	return OK;
 }
 
@@ -37,12 +37,12 @@ Status Pop(Stack *stack, void *e)
 		printf("stack is empty!\n");
 		return FALSE;
 	}
-	stack->top = (void *)((int)stack->top - stack->typesize);
+	stack->top = (void *)((unsigned long)stack->top - (unsigned long)stack->typesize);
 	memcpy(e, stack->top, stack->typesize);
 	return OK;
 }
 
 Status GetLen(Stack *stack)
 {
-	return (((int)stack->top - (int)stack->base) / stack->typesize);
+	return (((unsigned long)stack->top - (unsigned long)stack->base) / (unsigned long)stack->typesize);
 }
