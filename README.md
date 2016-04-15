@@ -19,5 +19,5 @@ a calculator based on SDL
 参考的是下面这篇文章:
         [http://m.blog.csdn.net/article/details?id=9123017](http://m.blog.csdn.net/article/details?id=9123017)
         
-* void *的用法
-* strtok_r函数(字符串分隔)
+* void *的用法(PC64 下int 与 char *不一样，用unsigned long)
+* strtok_r函数(Linux strtok_r/Windows strtok_s)
