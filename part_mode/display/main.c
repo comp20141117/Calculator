@@ -66,12 +66,13 @@ int init()
 
 int main(int argc, char *argv[])
 {	
-//	TTF_Font *font;
-//	font = TTF_OpenFont("Choko.ttf", TTF_FONTSIZE);
-//	SDL_Texture *texture = NULL;
-//	const char *str = "hello guy";
-//	SDL_Color color = {0, 0, 0};
-//	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET,	SCREEN_WIDTH, SCREEN_HEIGHT);
+	TTF_Font *font;
+	
+	SDL_Texture *texture = NULL;
+	
+	
+	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET,	SCREEN_WIDTH, SCREEN_HEIGHT);
+	
 	if(!init()) {
 		printf("Failed to initialize!");
 	}else{
@@ -86,37 +87,43 @@ int main(int argc, char *argv[])
 				}
 //				ch = KeyStates();
 //				strcat(str, &ch);
-//				SDL_SetRenderTarget(renderer, texture);
+
+				font = TTF_OpenFont("Choko.ttf", TTF_FONTSIZE);
+				const char *str = "hello guy";
+				SDL_Color color = {0, 0, 0};
+				
+				SDL_SetRenderTarget(renderer, texture);
 				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(renderer);
 				
-//				SDL_Texture *ttexture;
-//				SDL_Surface *surface;
-//				SDL_Rect display = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+				SDL_Texture *ttexture;
+				SDL_Surface *surface;
+				ttexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+				SDL_Rect display = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+				TTF_SizeText(font, str, &display.w, &display.h);
 
-//				SDL_RenderDrawRect(renderer, &display); 
-//				SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0x00);
-//				SDL_RenderFillRect(renderer, &display);
-/*				
-				surface = TTF_RenderText_Solid(font, "hello guy", color);
-				ttexture = SDL_CreateTextureFromSurface(renderer, surface);				
+				surface = TTF_RenderText_Solid(font, str, color);
+				ttexture = SDL_CreateTextureFromSurface(renderer, surface);
+				
+				SDL_SetRenderTarget(renderer, ttexture);
 				SDL_RenderCopyEx(renderer, ttexture, NULL, &display, 0.0, NULL, SDL_FLIP_NONE); 
-*/
-//				SDL_FreeSurface(surface);
-//				SDL_DestroyTexture(ttexture);
+
+				SDL_FreeSurface(surface);
+				SDL_DestroyTexture(ttexture);
+				TTF_CloseFont(font);
 				
 				SDL_SetRenderTarget(renderer, NULL);
-//				SDL_RenderCopy(renderer, texture, NULL, NULL);   
+				SDL_RenderCopy(renderer, texture, NULL, NULL);   
 				SDL_RenderPresent(renderer);
 
 			}
 		}
 	}
 
-//	TTF_CloseFont(font);
+	
 	TTF_Quit();
-//	SDL_DestroyTexture(texture);
-//	texture = NULL;
+	SDL_DestroyTexture(texture);
+	texture = NULL;
 	SDL_DestroyRenderer(renderer);
 	renderer = NULL;
 	SDL_DestroyWindow(window);
