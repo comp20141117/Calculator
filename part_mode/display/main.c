@@ -5,27 +5,18 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 160
-#define TTF_FONTSIZE 18
+
+int TTF_FONTSIZE = 30;
 
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
-int keystate[9] = {SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3,
+char str[100] = "\0";
+
+int keystate[10] = {SDL_SCANCODE_0, SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3,
 		    SDL_SCANCODE_4, SDL_SCANCODE_5, SDL_SCANCODE_6,
 		    SDL_SCANCODE_7, SDL_SCANCODE_8, SDL_SCANCODE_9};
-char charstate[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
-
-char KeyStates()
-{
-	char ch;
-	int i;
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
-	for(i = 0; i < 9; i++){
-		if(state[keystate[i]])
-			ch = charstate[i];
-	}
-	return ch;
-}
+char charstate[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 int ShowText(TTF_Font *font, SDL_Renderer *renderer, SDL_Texture *texture, char *str)
 {
@@ -33,15 +24,14 @@ int ShowText(TTF_Font *font, SDL_Renderer *renderer, SDL_Texture *texture, char 
 	const char *fstr = str;
 	SDL_Color color = {0, 0, 0};
 				
-	SDL_SetRenderTarget(renderer, texture);
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-	SDL_RenderClear(renderer);
-				
 	SDL_Texture *ttexture;
 	SDL_Surface *surface;
 	ttexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
 	SDL_Rect display = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
 	TTF_SizeText(font, fstr, &display.w, &display.h);
+	
+	if(display.w >= SCREEN_WIDTH && TTF_FONTSIZE > 15)
+		TTF_FONTSIZE -= 5;
 
 	surface = TTF_RenderText_Solid(font, fstr, color);
 	ttexture = SDL_CreateTextureFromSurface(renderer, surface);
@@ -72,7 +62,7 @@ int init()
 		}
 
 		window = SDL_CreateWindow(
-			"SDL Tutorial",
+			"display",
 			SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
 			SCREEN_WIDTH, SCREEN_HEIGHT,
 			SDL_WINDOW_SHOWN);
@@ -93,15 +83,17 @@ int init()
 	}
 
 	return success;
-}
+ }
 
 int main(int argc, char *argv[])
-{	
+{
+	int i;
+	char ch = '\0';
+	
 	TTF_Font *font;
 	
 	SDL_Texture *texture = NULL;
 
-	static char ch = 'a';
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET,	SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	if(!init()) {
@@ -111,17 +103,27 @@ int main(int argc, char *argv[])
 		int quit = 0;
 		SDL_Event e;
 		while(!quit){
-			
+
 			while(SDL_PollEvent(&e) != 0){
 				if(e.type == SDL_QUIT){
 					quit = 1;
 				}
+
+				SDL_SetRenderTarget(renderer, texture);
+				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_RenderClear(renderer);
+
+				const Uint8 *state = SDL_GetKeyboardState(NULL);
+					for(i = 0; i < 10; i++){
+						if(state[keystate[i]]){
+							ch = charstate[i];
+							if(strlen(str) < 100){
+								strcat(str, &ch);
+								SDL_Delay(300);
+							}
+						}
+					}
 				
-				ch = KeyStates();
-				
-//				strcat(str, &ch);
-				
-				char *str = &ch;
 				ShowText(font, renderer, texture, str);
 			}
 		}
