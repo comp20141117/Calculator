@@ -10,22 +10,53 @@
 SDL_Window *window = NULL;
 SDL_Renderer *renderer = NULL;
 
-/*char *keystate[9] = {"SDL_SCANCODE_1", "SDL_SCANCODE_2", "SDL_SCANCODE_3",
-		    "SDL_SCANCODE_4", "SDL_SCANCODE_5", "SDL_SCANCODE_6",
-		    "SDL_SCANCODE_7", "SDL_SCANCODE_8", "SDL_SCANCODE_9"};
+int keystate[9] = {SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3,
+		    SDL_SCANCODE_4, SDL_SCANCODE_5, SDL_SCANCODE_6,
+		    SDL_SCANCODE_7, SDL_SCANCODE_8, SDL_SCANCODE_9};
 char charstate[9] = {'1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
 char KeyStates()
 {
 	char ch;
 	int i;
-	const Uint8 *keyStates = SDL_GetKeyboardstate(NULL);
+	const Uint8 *state = SDL_GetKeyboardState(NULL);
 	for(i = 0; i < 9; i++){
-		if(keyStates[keystate[i]])
+		if(state[keystate[i]])
 			ch = charstate[i];
 	}
 	return ch;
-	}*/
+}
+
+int ShowText(TTF_Font *font, SDL_Renderer *renderer, SDL_Texture *texture, char *str)
+{
+	font = TTF_OpenFont("Choko.ttf", TTF_FONTSIZE);
+	const char *fstr = str;
+	SDL_Color color = {0, 0, 0};
+				
+	SDL_SetRenderTarget(renderer, texture);
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_RenderClear(renderer);
+				
+	SDL_Texture *ttexture;
+	SDL_Surface *surface;
+	ttexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+	SDL_Rect display = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+	TTF_SizeText(font, fstr, &display.w, &display.h);
+
+	surface = TTF_RenderText_Solid(font, fstr, color);
+	ttexture = SDL_CreateTextureFromSurface(renderer, surface);
+				
+	SDL_SetRenderTarget(renderer, ttexture);
+	SDL_RenderCopyEx(renderer, ttexture, NULL, &display, 0.0, NULL, SDL_FLIP_NONE); 
+
+	SDL_FreeSurface(surface);
+	SDL_DestroyTexture(ttexture);
+	TTF_CloseFont(font);
+				
+	SDL_SetRenderTarget(renderer, NULL);
+	SDL_RenderCopy(renderer, texture, NULL, NULL);   
+	SDL_RenderPresent(renderer);
+}
 
 int init()
 {
@@ -69,53 +100,29 @@ int main(int argc, char *argv[])
 	TTF_Font *font;
 	
 	SDL_Texture *texture = NULL;
-	
-	
+
+	static char ch = 'a';
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET,	SCREEN_WIDTH, SCREEN_HEIGHT);
 	
 	if(!init()) {
 		printf("Failed to initialize!");
 	}else{
+		
 		int quit = 0;
 		SDL_Event e;
 		while(!quit){
-//			const char ch;
 			
 			while(SDL_PollEvent(&e) != 0){
 				if(e.type == SDL_QUIT){
 					quit = 1;
 				}
-//				ch = KeyStates();
+				
+				ch = KeyStates();
+				
 //				strcat(str, &ch);
-
-				font = TTF_OpenFont("Choko.ttf", TTF_FONTSIZE);
-				const char *str = "hello guy";
-				SDL_Color color = {0, 0, 0};
 				
-				SDL_SetRenderTarget(renderer, texture);
-				SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
-				SDL_RenderClear(renderer);
-				
-				SDL_Texture *ttexture;
-				SDL_Surface *surface;
-				ttexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
-				SDL_Rect display = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
-				TTF_SizeText(font, str, &display.w, &display.h);
-
-				surface = TTF_RenderText_Solid(font, str, color);
-				ttexture = SDL_CreateTextureFromSurface(renderer, surface);
-				
-				SDL_SetRenderTarget(renderer, ttexture);
-				SDL_RenderCopyEx(renderer, ttexture, NULL, &display, 0.0, NULL, SDL_FLIP_NONE); 
-
-				SDL_FreeSurface(surface);
-				SDL_DestroyTexture(ttexture);
-				TTF_CloseFont(font);
-				
-				SDL_SetRenderTarget(renderer, NULL);
-				SDL_RenderCopy(renderer, texture, NULL, NULL);   
-				SDL_RenderPresent(renderer);
-
+				char *str = &ch;
+				ShowText(font, renderer, texture, str);
 			}
 		}
 	}
