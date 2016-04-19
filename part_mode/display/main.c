@@ -5,6 +5,7 @@
 
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGHT 160
+#define NUMBER 15
 
 int TTF_FONTSIZE = 30;
 
@@ -13,10 +14,15 @@ SDL_Renderer *renderer = NULL;
 
 char str[100] = "\0";
 
-int keystate[10] = {SDL_SCANCODE_0, SDL_SCANCODE_1, SDL_SCANCODE_2, SDL_SCANCODE_3,
-		    SDL_SCANCODE_4, SDL_SCANCODE_5, SDL_SCANCODE_6,
-		    SDL_SCANCODE_7, SDL_SCANCODE_8, SDL_SCANCODE_9};
-char charstate[10] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
+int keystate[NUMBER] = {SDL_SCANCODE_KP_0, SDL_SCANCODE_KP_1, SDL_SCANCODE_KP_2, SDL_SCANCODE_KP_3,
+		    SDL_SCANCODE_KP_4, SDL_SCANCODE_KP_5, SDL_SCANCODE_KP_6,
+		    SDL_SCANCODE_KP_7, SDL_SCANCODE_KP_8, SDL_SCANCODE_KP_9,
+		    SDL_SCANCODE_KP_PLUS, SDL_SCANCODE_KP_MINUS,
+		    SDL_SCANCODE_KP_MULTIPLY, SDL_SCANCODE_KP_DIVIDE, SDL_SCANCODE_KP_PERIOD};
+
+char *charstate[NUMBER] = {"0\0", "1\0", "2\0", "3\0", "4\0",
+		       "5\0", "6\0", "7\0", "8\0", "9\0",
+		       "+\0", "-\0", "*\0", "/\0", ".\0"};
 
 int ShowText(TTF_Font *font, SDL_Renderer *renderer, SDL_Texture *texture, char *str)
 {
@@ -88,7 +94,7 @@ int init()
 int main(int argc, char *argv[])
 {
 	int i;
-	char ch = '\0';
+	char *ch = "\0";
 	
 	TTF_Font *font;
 	
@@ -114,12 +120,12 @@ int main(int argc, char *argv[])
 				SDL_RenderClear(renderer);
 
 				const Uint8 *state = SDL_GetKeyboardState(NULL);
-					for(i = 0; i < 10; i++){
+					for(i = 0; i < NUMBER; i++){
 						if(state[keystate[i]]){
 							ch = charstate[i];
 							if(strlen(str) < 100){
-								strcat(str, &ch);
-								SDL_Delay(300);
+								strcat(str, ch);
+								SDL_Delay(250);
 							}
 						}
 					}
