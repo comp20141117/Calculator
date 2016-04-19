@@ -10,14 +10,26 @@ a calculator based on SDL
 ###3.对于输入进行检测或要求
 ###4.基于SDL做一个显示输入输出值模块
 ***
-> 表达式的转换与求值思路
+*注：part_mode部分为实现各个模块的思路*
+***
+> 表达式的转换与求值思路  
+    * 输入中缀表达式字符串  
+    * 中缀表达式转后缀表达式  
+    * 后缀表达式求值  
 
-* 输入中缀表达式字符串
-* 中缀表达式转后缀表达式
-* 后缀表达式求值
-
-参考的是下面这篇文章:
-        [http://m.blog.csdn.net/article/details?id=9123017](http://m.blog.csdn.net/article/details?id=9123017)
-        
 * void *的用法(PC64 下int 与 char *不一样，用unsigned long)
 * strtok_r函数(Linux strtok_r/Windows strtok_s)
+
+
+> 基于SDL的输入输出思路  
+    *接受键盘输入并输出对应的字符（查表法）  
+    *用一个字符串变量存储所有的输入字符  
+    *使用TTF将字符串输出  
+
+* 使用TTF时有的变量必须在定义surface前面定义，而不能在main函数开始定义
+* 字符串必须以\0结尾，使用strcat（）函数必须是两个char *变量，否则会错
+* 接测按键时为了避免速度过快出现显示两个相同字符，使用延时函数
+* 当字符充满矩形时将字体自动变小
+* 注意char * 与 char str[]的区别
+
+
