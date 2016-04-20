@@ -43,6 +43,17 @@ int RenderFillRect(SDL_Renderer *renderer, SDL_Rect rect, SDL_Color color)
 	return 1;
 }
 
+int PointInRect(SDL_Point p, SDL_Rect r)
+{
+  	if(p.x >= r.x && p.x <= (r.x + r.w)){
+	  	if(p.y >= r.y && p.y <=(r.y + r.h))
+	    		return 1;
+		else
+		  	return 0;
+	} else
+	  	return 0;
+}
+
 int StatusButton(Button btn)
 {
 	if(btn.button_status == 1){
@@ -95,6 +106,15 @@ int main(int argc, char *argv[])
 	SDL_Texture *texture = NULL;
 	TTF_Font *font;
 	texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGB555, SDL_TEXTUREACCESS_TARGET,	SCREEN_WIDTH, SCREEN_HEIGHT);
+	Button button[20];
+	for(i = 0; i < 20; i++){
+		button[i].button_rect.x = button_x[i/5] + 4;
+		button[i].button_rect.y = button_y[i%5] + 3;
+		button[i].button_rect.w = BUTTON_WIDTH - 8;
+		button[i].button_rect.h = BUTTON_HEIGHT - 6;
+		button[i].button_char = button_ch[i];
+		button[i].button_status = 0;
+	}
 	
 	if(!init()) {
 		printf("Failed to initialize!");
@@ -104,16 +124,6 @@ int main(int argc, char *argv[])
 		SDL_Event e;
 		while(!quit){
 
-			Button button[20];
-			for(i = 0; i < 20; i++){
-				button[i].button_rect.x = button_x[i/5] + 4;
-				button[i].button_rect.y = button_y[i%5] + 3;
-				button[i].button_rect.w = BUTTON_WIDTH - 8;
-				button[i].button_rect.h = BUTTON_HEIGHT - 6;
-				button[i].button_char = button_ch[i];
-				button[i].button_status = 0;
-			}
-			
 			SDL_SetRenderTarget(renderer, texture);
 			SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);			
 			SDL_RenderClear(renderer);
@@ -127,7 +137,7 @@ int main(int argc, char *argv[])
 				SDL_RenderDrawLine(renderer, button_x[0], button_y[i], SCREEN_WIDTH, button_y[i]);
 			}
 			for(i = 0; i < 20; i++){
-				RenderFillRect(renderer, button[i].button_rect, button_color);
+				StatusButton(button[i]);
 			
 				font = TTF_OpenFont("Choko.ttf", 35);
 				SDL_Color ttf_color = {0, 0, 0};
@@ -150,9 +160,24 @@ int main(int argc, char *argv[])
 				SDL_DestroyTexture(ttexture);
 				TTF_CloseFont(font);
 			}
+
+			
 			while(SDL_PollEvent(&e) != 0){
 				if(e.type == SDL_QUIT){
 					quit = 1;
+				}else if(e.type == SDL_MOUSEBUTTONDOWN){
+					if(e.button.button == SDL_BUTTON_LEFT){
+						SDL_Point point;
+						SDL_GetMouseState(&point.x, &point.y);
+						for(i = 0; i < 20; i++){
+							if(PointInRect(point, button[i].button_rect))
+								button[i].button_status = 1;
+						}
+					}
+				}else{
+					for(i = 0; i < 20; i++){
+						button[i].button_status = 0;
+					}
 				}
 			}
 			SDL_SetRenderTarget(renderer, NULL);
