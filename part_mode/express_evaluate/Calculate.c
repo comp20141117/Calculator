@@ -20,11 +20,11 @@ Status InfixToPostfix(char *infix, char *postfix)
 	c = *(infix + i);
 	i++;
 	while ('\n'!= c){
-		while(c >= '0' && c <= '9'){
+		while(c == '.' || (c >= '0' && c <= '9')){
 			postfix[j++] = c;
 			c = *(infix + i);
 			i++;
-			if(c < '0' || c > '9')
+			if(c != '.' && (c < '0' || c > '9'))
 				postfix[j++] = ' ';
 		}
 		if (')' == c){
